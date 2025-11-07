@@ -11,6 +11,9 @@
  
 ---
 ## ERD 구조
+* lv1
+<img width="664" height="246" alt="image" src="https://github.com/user-attachments/assets/a4b2077e-4493-48b9-96df-8e6684982c11" />
+
 
 ---
 ## 주요 기능
@@ -20,6 +23,8 @@
 
 ---
 ## API 명세서
+<img width="696" height="348" alt="image" src="https://github.com/user-attachments/assets/4066946d-5f32-4587-9570-328ff2ecb83f" />
+
 
 ---
 ## 기술 스택
