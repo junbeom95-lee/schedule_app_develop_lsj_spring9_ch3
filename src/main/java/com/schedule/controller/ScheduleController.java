@@ -1,8 +1,6 @@
 package com.schedule.controller;
 
-import com.schedule.dto.CreateScheduleRequest;
-import com.schedule.dto.CreateScheduleResponse;
-import com.schedule.dto.GetScheduleResponse;
+import com.schedule.dto.*;
 import com.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -56,11 +54,19 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    //TODO 일정 수정 update()
-    //TODO Method : PUT,  URL : "/schedules/{id}"
-    //TODO PathVariable (Long id)
-    //TODO RequestBody UpdateScheduleRequest (title, content)
-    //TODO ResponseEntity<UpdateScheduleResponse> (id, username, title, content, createdAt, modifiedAt), OK
+    /**
+     * 일정 수정
+     * @param id 일정 고유 ID
+     * @param request UpdateScheduleRequest (title, content)
+     * @return ResponseEntity<UpdateScheduleResponse> (id, username, title, content, createdAt, modifiedAt)
+     */
+    @PutMapping("/schedules/{id}")
+    public ResponseEntity<UpdateScheduleResponse> update(@PathVariable Long id, @RequestBody UpdateScheduleRequest request) {
+
+        UpdateScheduleResponse result = scheduleService.update(id, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
 
     //TODO 일정 삭제 delete()
     //TODO Method : DELETE,  URL : "/schedules/{id}"
