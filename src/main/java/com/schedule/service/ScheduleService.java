@@ -1,5 +1,8 @@
 package com.schedule.service;
 
+import com.schedule.dto.CreateScheduleRequest;
+import com.schedule.dto.CreateScheduleResponse;
+import com.schedule.entity.Schedule;
 import com.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,9 +13,30 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
 
-    //TODO 일정 생성 create()
-    //TODO Param CreateScheduleRequest (username, title, content)
-    //TODO Return CreateScheduleResponse (id, username, title, content, createdAt, modifiedAt)
+    /**
+     * 일정 생성
+     *
+     * @param request CreateScheduleRequest (username, title, content)
+     * @return CreateScheduleResponse (id, username, title, content, createdAt, modifiedAt)
+     */
+    public CreateScheduleResponse create(CreateScheduleRequest request) {
+
+        Schedule schedule = new Schedule(request.getUsername(), request.getTitle(), request.getContent());
+
+        Schedule savedSchedule = scheduleRepository.save(schedule);
+
+        CreateScheduleResponse response = new CreateScheduleResponse(savedSchedule.getId(),
+                savedSchedule.getUsername(),
+                savedSchedule.getTitle(),
+                savedSchedule.getContent(),
+                savedSchedule.getCreatedAt(),
+                savedSchedule.getModifiedAt());
+
+        return response;
+    }
+
+
+
 
     //TODO 일정 조회 다건 getAll() - username 있을 때
     //TODO Param (String username)

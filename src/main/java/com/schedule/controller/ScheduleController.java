@@ -1,8 +1,14 @@
 package com.schedule.controller;
 
+import com.schedule.dto.CreateScheduleRequest;
+import com.schedule.dto.CreateScheduleResponse;
 import com.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -10,10 +16,18 @@ public class ScheduleController {
 
     private final ScheduleService scheduleService;
 
-    //TODO 일정 생성 create()
-    //TODO Method : POST, URL : "/schedules"
-    //TODO RequestBody CreateScheduleRequest (username, title, content)
-    //TODO ResponseEntity<CreateScheduleResponse> (id, username, title, content, createdAt, modifiedAt), CREATED
+    /**
+     * 일정 생성
+     * @param request CreateScheduleRequest (username, title, content)
+     * @return ResponseEntity<CreateScheduleResponse> (id, username, title, content, createdAt, modifiedAt)
+     */
+    @PostMapping("/schedules")
+    public ResponseEntity<CreateScheduleResponse> create(@RequestBody CreateScheduleRequest request) {
+
+        CreateScheduleResponse result = scheduleService.create(request);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
 
     //TODO 일정 조회 다건 getAll()
     //TODO Method : GET,  URL : "/schedules"
