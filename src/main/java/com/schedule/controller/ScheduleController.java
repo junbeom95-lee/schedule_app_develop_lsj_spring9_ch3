@@ -68,8 +68,14 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    //TODO 일정 삭제 delete()
-    //TODO Method : DELETE,  URL : "/schedules/{id}"
-    //TODO PathVariable (Long id)
-    //TODO ResponseEntity<Void> NO_CONTENT
+    /**
+     * 일정 삭제
+     * @param id 일정 고유 ID
+     * @return ResponseEntity<Void> NO_CONTENT
+     */
+    @DeleteMapping("/schedules/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        scheduleService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

@@ -123,7 +123,17 @@ public class ScheduleService {
         return response;
     }
 
-    //TODO 일정 삭제 delete()
-    //TODO Param (Long id)
-    //TODO ResponseEntity<Void> NO_CONTENT
+    /**
+     * 일정 삭제
+     * @param id 일정 고유 ID
+     */
+    @Transactional
+    public void delete(Long id) {
+        //1. id로 일정이 존재하는지 확인
+        boolean existence = scheduleRepository.existsById(id);
+
+        //2. 일정이 없으면 throw 있으면 삭제
+        if (!existence) throw new IllegalStateException("찾으시는 일정이 없습니다.");
+        else scheduleRepository.deleteById(id);
+    }
 }
