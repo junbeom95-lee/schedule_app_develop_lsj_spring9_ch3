@@ -15,8 +15,7 @@
 <img width="664" height="246" alt="image" src="https://github.com/user-attachments/assets/a4b2077e-4493-48b9-96df-8e6684982c11" />
 
 * lv2
-<img width="1207" height="189" alt="image" src="https://github.com/user-attachments/assets/5641a9b2-613c-4221-a3f1-ff5edca9bc83" />
-
+<img width="1155" height="181" alt="image" src="https://github.com/user-attachments/assets/6727fa28-52aa-49dd-90d5-d8cdceedf577" />
 
 ---
 ## 주요 기능
