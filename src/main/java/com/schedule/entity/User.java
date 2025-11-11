@@ -13,7 +13,7 @@ public class User extends BaseEntity{   //유저 Entity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;                    //유저 고유 ID
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String email;               //이메일
     @Column(nullable = false, length = 50)
     private String username;            //유저명
