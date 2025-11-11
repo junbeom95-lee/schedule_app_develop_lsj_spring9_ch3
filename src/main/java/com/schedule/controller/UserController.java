@@ -13,10 +13,9 @@ public class UserController {
 
     private final UserService userService;
 
-    //TODO 비밀번호 추가 예정  CreateUserRequest (email, username, password)
     /**
      * 유저 생성
-     * @param request CreateUserRequest (email, username)
+     * @param request CreateUserRequest (email, username, password)
      * @return ResponseEntity<CreateUserResponse> (id, email, username), CREATED
      */
     @PostMapping("/users")
@@ -34,11 +33,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
     }
 
-    //TODO 비밀번호 수정도 가능하게 변경 Request (email, username, password)
     /**
      * 유저 수정
      * @param userId 유저 고유 ID
-     * @param request UpdateUserRequest (email, username)
+     * @param request UpdateUserRequest (email, username, password, newPassword)
      * @return ResponseEntity<UpdateUserResponse> (id, email, username, createdAt, modifiedAt)
      */
     @PutMapping("/users/{userId}")
@@ -46,15 +44,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
     }
 
-    //TODO 비밀번호가 맞으면 삭제예정 RequestBody password
     /**
      * 유저 삭제
      * @param userId 유저 고유 ID
+     * @param request DeleteUserRequest (password)
      * @return ResponseEntity<Void> NO_CONTENT
      */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Void> delete(@PathVariable Long userId) {
-        userService.delete(userId);
+    public ResponseEntity<Void> delete(@PathVariable Long userId, @RequestBody DeleteUserRequest request) {
+        userService.delete(userId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
