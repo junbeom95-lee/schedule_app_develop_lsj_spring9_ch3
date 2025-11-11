@@ -65,7 +65,19 @@ public class UserService {
         return new UpdateUserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt());
     }
 
-    //TODO 유저 삭제 delete()
-    //TODO Param (Long userId)
-    //TODO Return void
+    /**
+     * 유저 삭제
+     * @param userId 유저 고유 ID
+     */
+    public void delete(Long userId) {
+
+        //1. 유저 아이디 존재 여부 확인
+        boolean existence = userRepository.existsById(userId);
+
+        //2. 없으면 throw
+        if (!existence) throw new IllegalStateException("없는 유저입니다");
+
+        //3. 있으면 삭제
+        userRepository.deleteById(userId);
+    }
 }
