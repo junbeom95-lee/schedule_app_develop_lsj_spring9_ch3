@@ -1,8 +1,6 @@
 package com.schedule.controller;
 
-import com.schedule.dto.CreateUserRequest;
-import com.schedule.dto.CreateUserResponse;
-import com.schedule.dto.GetUserResponse;
+import com.schedule.dto.*;
 import com.schedule.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,11 +33,16 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
     }
 
-    //TODO 유저 수정 update()
-    //TODO Method : PUT,  URL : "/users/{userId}"
-    //TODO PathVariable (Long userId)
-    //TODO RequestBody UpdateUserRequest (username, email)
-    //TODO ResponseEntity<UpdateUserResponse> (id, username, email), OK
+    /**
+     * 유저 수정
+     * @param userId 유저 고유 ID
+     * @param request UpdateUserRequest (username, email)
+     * @return ResponseEntity<UpdateUserResponse> (id, username, email, createdAt, modifiedAt)
+     */
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<UpdateUserResponse> update(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
+    }
 
     //TODO 유저 삭제 delete()
     //TODO Method : DELETE,  URL : "/users/{userId}"

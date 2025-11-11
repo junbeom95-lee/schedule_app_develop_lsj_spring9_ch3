@@ -22,4 +22,14 @@ public class User extends BaseEntity{   //유저 Entity
         this.username = username;
         this.email = email;
     }
+
+    /**
+     * 유저 수정 하기 위한 메서드
+     * @param username 수정할 유저명
+     * @param email 수정할 이메일
+     */
+    public void update(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
 }

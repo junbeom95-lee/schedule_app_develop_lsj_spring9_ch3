@@ -1,8 +1,6 @@
 package com.schedule.service;
 
-import com.schedule.dto.CreateUserRequest;
-import com.schedule.dto.CreateUserResponse;
-import com.schedule.dto.GetUserResponse;
+import com.schedule.dto.*;
 import com.schedule.entity.User;
 import com.schedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,24 +33,39 @@ public class UserService {
 
     /**
      * 유저 조회
-     * @param id 유저 고유 ID
+     * @param userId 유저 고유 ID
      * @return GetUserResponse (id, username, email)
      */
     @Transactional(readOnly = true)
-    public GetUserResponse getUser(Long id) {
+    public GetUserResponse getUser(Long userId) {
 
         //1. 유저 아이디 조회
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
 
         //2. Response DTO 변환 및 반환
         return new GetUserResponse(user.getId(), user.getUsername(), user.getEmail());
     }
 
-    //TODO 유저 수정 update()
-    //TODO Param (Long id, UpdateUserRequest((username, email)))
-    //TODO Return UpdateUserResponse (id, username, email)
+    /**
+     * 유저 수정
+     * @param userId 유저 고유 ID
+     * @param request UpdateUserRequest (username, email)
+     * @return UpdateUserResponse (id, username, email, createdAt, modifiedAt)
+     */
+    @Transactional
+    public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
+
+        //1. 유저 아이디 조회
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
+
+        //2. 영속성 컨텍스트를 활용하여 Entity 변경하여 자동으로 DB 반영
+        user.update(request.getUsername(), request.getEmail());
+
+        //2. Response DTO 변환 및 반환
+        return new UpdateUserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt());
+    }
 
     //TODO 유저 삭제 delete()
-    //TODO Param (Long id)
+    //TODO Param (Long userId)
     //TODO Return void
 }
