@@ -1,5 +1,8 @@
 package com.schedule.service;
 
+import com.schedule.dto.CreateUserRequest;
+import com.schedule.dto.CreateUserResponse;
+import com.schedule.entity.User;
 import com.schedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,9 +13,19 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    //TODO 유저 생성 create()
-    //TODO Param CreateUserRequest (username, email)
-    //TODO Return CreateUserResponse> , createdAt, modifiedAt)
+    /**
+     * 유저 생성
+     * @param request CreateUserRequest (username, email)
+     * @return CreateUserResponse (id, username, email)
+     */
+    public CreateUserResponse create(CreateUserRequest request) {
+
+        User user = new User(request.getUsername(), request.getEmail());
+
+        User savedUser = userRepository.save(user);
+
+        return new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
+    }
 
     //TODO 유저 조회 getUser()
     //TODO Param (Long id)

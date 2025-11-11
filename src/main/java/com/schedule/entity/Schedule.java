@@ -15,14 +15,15 @@ public class Schedule extends BaseEntity { //일정 Entity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;            //일정 고유 ID
-    @Column(nullable = false, length = 50)
-    private String username;    //작성 유저명
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;          //유저
     @Column(nullable = false, length = 100)
     private String title;       //일정 제목
     private String content;     //일정 내용
 
-    public Schedule(String username, String title, String content) {
-        this.username = username;
+    public Schedule(User user, String title, String content) {
+        this.user = user;
         this.title = title;
         this.content = content;
     }

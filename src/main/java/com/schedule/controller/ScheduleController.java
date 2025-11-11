@@ -17,8 +17,8 @@ public class ScheduleController {
 
     /**
      * 일정 생성
-     * @param request CreateScheduleRequest (username, title, content)
-     * @return ResponseEntity<CreateScheduleResponse> (id, username, title, content, createdAt, modifiedAt)
+     * @param request CreateScheduleRequest (userId, title, content)
+     * @return ResponseEntity<CreateScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
      */
     @PostMapping("/schedules")
     public ResponseEntity<CreateScheduleResponse> create(@RequestBody CreateScheduleRequest request) {
@@ -30,13 +30,13 @@ public class ScheduleController {
 
     /**
      * 일정 조회 다건
-     * @param username 작성 유저명
-     * @return ResponseEntity<List<GetScheduleResponse>> (id, username, title, content, createdAt, modifiedAt)
+     * @param userId 유저 고유 ID
+     * @return ResponseEntity<List<GetScheduleResponse>> (id, userId, title, content, createdAt, modifiedAt)
      */
     @GetMapping("/schedules")
-    public ResponseEntity<List<GetScheduleResponse>> getAll(@RequestParam(required = false) String username) {
+    public ResponseEntity<List<GetScheduleResponse>> getAll(@RequestParam(required = false) Long userId) {
 
-        List<GetScheduleResponse> resultList = scheduleService.getAll(username);
+        List<GetScheduleResponse> resultList = scheduleService.getAll(userId);
 
         return ResponseEntity.status(HttpStatus.OK).body(resultList);
     }
@@ -44,7 +44,7 @@ public class ScheduleController {
     /**
      * 일정 조회 단건
      * @param id 일정 고유 ID
-     * @return ResponseEntity<GetOneScheduleResponse> (id, username, title, content, createdAt, modifiedAt)
+     * @return ResponseEntity<GetOneScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
      */
     @GetMapping("/schedules/{id}")
     public ResponseEntity<GetScheduleResponse> getOne(@PathVariable Long id) {
@@ -58,7 +58,7 @@ public class ScheduleController {
      * 일정 수정
      * @param id 일정 고유 ID
      * @param request UpdateScheduleRequest (title, content)
-     * @return ResponseEntity<UpdateScheduleResponse> (id, username, title, content, createdAt, modifiedAt)
+     * @return ResponseEntity<UpdateScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
      */
     @PutMapping("/schedules/{id}")
     public ResponseEntity<UpdateScheduleResponse> update(@PathVariable Long id, @RequestBody UpdateScheduleRequest request) {

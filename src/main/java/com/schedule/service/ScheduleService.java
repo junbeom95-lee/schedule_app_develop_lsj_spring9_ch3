@@ -2,7 +2,9 @@ package com.schedule.service;
 
 import com.schedule.dto.*;
 import com.schedule.entity.Schedule;
+import com.schedule.entity.User;
 import com.schedule.repository.ScheduleRepository;
+import com.schedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     /**
      * 일정 생성
@@ -24,15 +27,18 @@ public class ScheduleService {
     @Transactional
     public CreateScheduleResponse create(CreateScheduleRequest request) {
 
-        //1. 요청받은 DTO를 Entity 객체로 변환
-        Schedule schedule = new Schedule(request.getUsername(), request.getTitle(), request.getContent());
+        //1. 유저 고유 아이디로 User Entity 조회
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new IllegalStateException("없는 유저입니다."));
 
-        //2. 변환된 Entity를 DB에 저장하고 영속화된 Entity를 반환받음
+        //2. 요청받은 DTO를 Entity 객체로 변환
+        Schedule schedule = new Schedule(user, request.getContent(), request.getTitle());
+
+        //3. 변환된 Entity를 DB에 저장하고 영속화된 Entity를 반환받음
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
-        //3. 저장된 Entity를 응답 DTO로 변환하여 Controller에 반환
+        //4. 저장된 Entity를 응답 DTO로 변환하여 Controller에 반환
         CreateScheduleResponse response = new CreateScheduleResponse(savedSchedule.getId(),
-                savedSchedule.getUsername(),
+                savedSchedule.getUser().getId(),
                 savedSchedule.getTitle(),
                 savedSchedule.getContent(),
                 savedSchedule.getCreatedAt(),
@@ -43,28 +49,30 @@ public class ScheduleService {
 
     /**
      * 일정 조회 다건
-     * @param username 작성 유저명
+     * @param userId 유저 고유 ID
      * @return List<GetScheduleResponse> (id, username, title, content, createdAt, modifiedAt)
      */
     @Transactional(readOnly = true)
-    public List<GetScheduleResponse> getAll(String username) {
+    public List<GetScheduleResponse> getAll(Long userId) {
 
         List<Schedule> list;
 
         //1. username을 확인
-        if (username.isBlank()) {
+        if (userId == null) {
             //1-a. 없으면 모두 조회
             list = scheduleRepository.findAll();
         } else {
             //1-b. 있으면 username으로 조회
-            list = scheduleRepository.findAllByUsername(username);
+            User user = userRepository.findById(userId).orElseThrow( () -> new IllegalStateException("없는 유저입니다."));
+
+            list = scheduleRepository.findAllByUserId(user.getId());
         }
 
         //2. List<Entity>에서 List<DTO>로 변환 및 반환
         List<GetScheduleResponse> responseList = new ArrayList<>();
         for (Schedule schedule : list) {
             responseList.add(new GetScheduleResponse(schedule.getId(),
-                    schedule.getUsername(),
+                    schedule.getUser().getId(),
                     schedule.getTitle(),
                     schedule.getContent(),
                     schedule.getCreatedAt(),
@@ -88,7 +96,7 @@ public class ScheduleService {
         //2. 찾은 일정을 DTO로 담아 반환
         GetScheduleResponse response = new GetScheduleResponse(
                 schedule.getId(),
-                schedule.getUsername(),
+                schedule.getUser().getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getCreatedAt(),
@@ -114,7 +122,7 @@ public class ScheduleService {
         //3. 변경된 Entity로 응답 DTO 생성 및 반환
         UpdateScheduleResponse response = new UpdateScheduleResponse(
                 schedule.getId(),
-                schedule.getUsername(),
+                schedule.getUser().getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
                 schedule.getCreatedAt(),
