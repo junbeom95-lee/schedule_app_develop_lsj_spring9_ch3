@@ -69,6 +69,7 @@ public class UserService {
      * 유저 삭제
      * @param userId 유저 고유 ID
      */
+    @Transactional
     public void delete(Long userId) {
 
         //1. 유저 아이디 존재 여부 확인
