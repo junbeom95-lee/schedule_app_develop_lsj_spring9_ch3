@@ -6,34 +6,25 @@
 일정 관리 API를 구현<br/>
 1. 일정을 생성, 조회, 수정, 삭제를 할 수 있습니다.
 2. 유저를 생성, 조회, 수정, 삭제를 할 수 있습니다.
-3. 회원가입을 할 수 있습니다.
+3. 비밀번호를 사용하여 회원가입을 할 수 있습니다.
 4. 로그인 기능이 있습니다.
  
 ---
 ## ERD 구조
-* lv1
-<img width="664" height="246" alt="image" src="https://github.com/user-attachments/assets/a4b2077e-4493-48b9-96df-8e6684982c11" />
 
-* lv2
-<img width="1155" height="181" alt="image" src="https://github.com/user-attachments/assets/6727fa28-52aa-49dd-90d5-d8cdceedf577" />
+<img width="1154" height="180" alt="image" src="https://github.com/user-attachments/assets/8bc08c66-2c88-46d8-a594-9112b0948241" />
 
 ---
 ## 주요 기능
 * 일정 생성, 일정 조회, 일정 수정, 일정 삭제 (CRUD)
-* 유저 생성, 유저 조회, 유저 수정, 유저 삭제 (CRUD)
-* 회원 가입 및 로그인(인증)
+* 유저 생성(회원 가입), 유저 조회, 유저 수정, 유저 삭제 (CRUD)
+* 로그인(인증)
 
 ---
 ## API 명세서
-* lv1
-<img width="693" height="351" alt="image" src="https://github.com/user-attachments/assets/aaab1363-ad42-4eed-92a5-c55556723c74" />
+<img width="781" height="697" alt="image" src="https://github.com/user-attachments/assets/6c1aa78f-8901-4bd2-9590-cc9111010941" />
 
-https://www.notion.so/2a4555a1c11f80e0a662ee5c2a178af3?v=2a4555a1c11f80d18a30000c67daca4b&source=copy_link
-
-* lv2
-<img width="604" height="268" alt="image" src="https://github.com/user-attachments/assets/9dac2b8c-1efd-4e80-95f7-8d41cebb5b94" />
-
-https://www.notion.so/2a5555a1c11f803ab6a5f898f459bdc2?v=2a5555a1c11f8017b8ab000c01c8a796&source=copy_link
+https://www.notion.so/API-2a4555a1c11f8094b643ca1db5020592?source=copy_link
 
 ---
 ## 기술 스택
