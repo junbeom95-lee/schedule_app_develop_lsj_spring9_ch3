@@ -13,10 +13,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    //TODO 비밀번호 추가
     /**
      * 유저 생성
-     * @param request CreateUserRequest (username, email)
-     * @return CreateUserResponse (id, username, email)
+     * @param request CreateUserRequest (email, username)
+     * @return CreateUserResponse (id, email, username)
      */
     @Transactional
     public CreateUserResponse create(CreateUserRequest request) {
@@ -28,13 +29,13 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         //3. Entity -> ResponseDTO
-        return new CreateUserResponse(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail());
+        return new CreateUserResponse(savedUser.getId(), savedUser.getEmail(), savedUser.getUsername());
     }
 
     /**
      * 유저 조회
      * @param userId 유저 고유 ID
-     * @return GetUserResponse (id, username, email)
+     * @return GetUserResponse (id, email, username)
      */
     @Transactional(readOnly = true)
     public GetUserResponse getUser(Long userId) {
@@ -43,14 +44,15 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
 
         //2. Response DTO 변환 및 반환
-        return new GetUserResponse(user.getId(), user.getUsername(), user.getEmail());
+        return new GetUserResponse(user.getId(), user.getEmail(), user.getUsername());
     }
 
+    //TODO 비밀번호 맞으면 수정 아니면 throw
     /**
      * 유저 수정
      * @param userId 유저 고유 ID
-     * @param request UpdateUserRequest (username, email)
-     * @return UpdateUserResponse (id, username, email, createdAt, modifiedAt)
+     * @param request UpdateUserRequest (email, username)
+     * @return UpdateUserResponse (id, email, username, createdAt, modifiedAt)
      */
     @Transactional
     public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
@@ -62,9 +64,10 @@ public class UserService {
         user.update(request.getUsername(), request.getEmail());
 
         //2. Response DTO 변환 및 반환
-        return new UpdateUserResponse(user.getId(), user.getUsername(), user.getEmail(), user.getCreatedAt(), user.getModifiedAt());
+        return new UpdateUserResponse(user.getId(), user.getEmail(), user.getUsername(), user.getCreatedAt(), user.getModifiedAt());
     }
 
+    //TODO 비밀번호 맞으면 삭제 가능
     /**
      * 유저 삭제
      * @param userId 유저 고유 ID

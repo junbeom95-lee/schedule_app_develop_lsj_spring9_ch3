@@ -17,6 +17,9 @@ public class User extends BaseEntity{   //유저 Entity
     private String username;            //유저명
     @Column(nullable = false, length = 50)
     private String email;               //이메일
+    //TODO 비밀번호 추가
+    //TODO 생성자에도 추가
+    //TODO 비밀번호도 update 메서드에 추가 예정
 
     public User(String username, String email) {
         this.username = username;

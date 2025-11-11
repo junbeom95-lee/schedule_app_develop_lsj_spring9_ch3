@@ -13,10 +13,11 @@ public class UserController {
 
     private final UserService userService;
 
+    //TODO 비밀번호 추가 예정  CreateUserRequest (email, username, password)
     /**
      * 유저 생성
-     * @param request CreateUserRequest (username, email)
-     * @return ResponseEntity<CreateUserResponse> (id, username, email), CREATED
+     * @param request CreateUserRequest (email, username)
+     * @return ResponseEntity<CreateUserResponse> (id, email, username), CREATED
      */
     @PostMapping("/users")
     public ResponseEntity<CreateUserResponse> create(@RequestBody CreateUserRequest request) {
@@ -26,24 +27,26 @@ public class UserController {
     /**
      * 유저 조회
      * @param userId 유저 고유 ID
-     * @return ResponseEntity<GetUserResponse> (id, username, email)
+     * @return ResponseEntity<GetUserResponse> (id, email, username)
      */
     @GetMapping("/users/{userId}")
     public ResponseEntity<GetUserResponse> getUser(@PathVariable Long userId) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
     }
 
+    //TODO 비밀번호 수정도 가능하게 변경 Request (email, username, password)
     /**
      * 유저 수정
      * @param userId 유저 고유 ID
-     * @param request UpdateUserRequest (username, email)
-     * @return ResponseEntity<UpdateUserResponse> (id, username, email, createdAt, modifiedAt)
+     * @param request UpdateUserRequest (email, username)
+     * @return ResponseEntity<UpdateUserResponse> (id, email, username, createdAt, modifiedAt)
      */
     @PutMapping("/users/{userId}")
     public ResponseEntity<UpdateUserResponse> update(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
     }
 
+    //TODO 비밀번호가 맞으면 삭제예정 RequestBody password
     /**
      * 유저 삭제
      * @param userId 유저 고유 ID

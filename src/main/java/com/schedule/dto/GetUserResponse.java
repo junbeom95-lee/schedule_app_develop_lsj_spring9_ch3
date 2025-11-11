@@ -6,12 +6,12 @@ import lombok.Getter;
 public class GetUserResponse {
 
     private final Long id;
-    private final String username;
     private final String email;
+    private final String username;
 
-    public GetUserResponse(Long id, String username, String email) {
+    public GetUserResponse(Long id, String email, String username) {
         this.id = id;
-        this.username = username;
         this.email = email;
+        this.username = username;
     }
 }
