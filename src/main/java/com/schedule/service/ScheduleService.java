@@ -31,7 +31,7 @@ public class ScheduleService {
         User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new IllegalStateException("없는 유저입니다."));
 
         //2. 요청받은 DTO를 Entity 객체로 변환
-        Schedule schedule = new Schedule(user, request.getContent(), request.getTitle());
+        Schedule schedule = new Schedule(user, request.getTitle(), request.getContent());
 
         //3. 변환된 Entity를 DB에 저장하고 영속화된 Entity를 반환받음
         Schedule savedSchedule = scheduleRepository.save(schedule);
@@ -84,14 +84,14 @@ public class ScheduleService {
 
     /**
      * 일정 조회 단건
-     * @param id 일정 고유 ID
+     * @param scheduleId 일정 고유 ID
      * @return GetOneScheduleResponse (id, username, title, content, createdAt, modifiedAt)
      */
     @Transactional(readOnly = true)
-    public GetScheduleResponse getOne(Long id) {
+    public GetScheduleResponse getOne(Long scheduleId) {
 
         //1. 일정 찾기
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(() -> new IllegalStateException("찾으시는 일정이 없습니다."));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new IllegalStateException("찾으시는 일정이 없습니다."));
 
         //2. 찾은 일정을 DTO로 담아 반환
         GetScheduleResponse response = new GetScheduleResponse(
@@ -106,15 +106,15 @@ public class ScheduleService {
 
     /**
      * 일정 수정
-     * @param id 일정 고유 ID
+     * @param scheduleId 일정 고유 ID
      * @param request UpdateScheduleRequest 변경할 title, content
      * @return UpdateScheduleResponse (id, username, title, content, createdAt, modifiedAt)
      */
     @Transactional
-    public UpdateScheduleResponse update(Long id, UpdateScheduleRequest request) {
+    public UpdateScheduleResponse update(Long scheduleId, UpdateScheduleRequest request) {
 
         //1. id로 일정 조회 없으면 예외 처리
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow( () -> new IllegalStateException("찾으시는 일정이 없습니다."));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow( () -> new IllegalStateException("찾으시는 일정이 없습니다."));
 
         //2. 영속성 컨텍스트를 활용하여 Entity 변경하여 자동으로 DB 반영
         schedule.update(request.getTitle(), request.getContent());
@@ -133,15 +133,15 @@ public class ScheduleService {
 
     /**
      * 일정 삭제
-     * @param id 일정 고유 ID
+     * @param scheduleId 일정 고유 ID
      */
     @Transactional
-    public void delete(Long id) {
+    public void delete(Long scheduleId) {
         //1. id로 일정이 존재하는지 확인
-        boolean existence = scheduleRepository.existsById(id);
+        boolean existence = scheduleRepository.existsById(scheduleId);
 
         //2. 일정이 없으면 throw 있으면 삭제
         if (!existence) throw new IllegalStateException("찾으시는 일정이 없습니다.");
-        else scheduleRepository.deleteById(id);
+        else scheduleRepository.deleteById(scheduleId);
     }
 }

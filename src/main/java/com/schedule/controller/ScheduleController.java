@@ -43,39 +43,39 @@ public class ScheduleController {
 
     /**
      * 일정 조회 단건
-     * @param id 일정 고유 ID
+     * @param scheduleId 일정 고유 ID
      * @return ResponseEntity<GetOneScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
      */
-    @GetMapping("/schedules/{id}")
-    public ResponseEntity<GetScheduleResponse> getOne(@PathVariable Long id) {
+    @GetMapping("/schedules/{scheduleId}")
+    public ResponseEntity<GetScheduleResponse> getOne(@PathVariable Long scheduleId) {
 
-        GetScheduleResponse result = scheduleService.getOne(id);
+        GetScheduleResponse result = scheduleService.getOne(scheduleId);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**
      * 일정 수정
-     * @param id 일정 고유 ID
+     * @param scheduleId 일정 고유 ID
      * @param request UpdateScheduleRequest (title, content)
      * @return ResponseEntity<UpdateScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
      */
-    @PutMapping("/schedules/{id}")
-    public ResponseEntity<UpdateScheduleResponse> update(@PathVariable Long id, @RequestBody UpdateScheduleRequest request) {
+    @PutMapping("/schedules/{scheduleId}")
+    public ResponseEntity<UpdateScheduleResponse> update(@PathVariable Long scheduleId, @RequestBody UpdateScheduleRequest request) {
 
-        UpdateScheduleResponse result = scheduleService.update(id, request);
+        UpdateScheduleResponse result = scheduleService.update(scheduleId, request);
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**
      * 일정 삭제
-     * @param id 일정 고유 ID
+     * @param scheduleId 일정 고유 ID
      * @return ResponseEntity<Void> NO_CONTENT
      */
-    @DeleteMapping("/schedules/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        scheduleService.delete(id);
+    @DeleteMapping("/schedules/{scheduleId}")
+    public ResponseEntity<Void> delete(@PathVariable Long scheduleId) {
+        scheduleService.delete(scheduleId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
