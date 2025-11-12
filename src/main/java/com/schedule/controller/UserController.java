@@ -2,6 +2,7 @@ package com.schedule.controller;
 
 import com.schedule.dto.*;
 import com.schedule.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,15 +57,34 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    //TODO 로그인 login()
-    //TODO Method : POST, URL : "/login"
-    //TODO RequestBody LoginRequest (email, password)
-    //TODO setAttribute
-    //TODO ResponseEntity<LoginResponse> (id, email)
+    /**
+     * 로그인 세션 설정
+     * @param request LoginRequest (email, password)
+     * @param session HttpSession 세션
+     * @return ResponseEntity<LoginResponse> (id, email), OK
+     */
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpSession session) {
+        LoginResponse result = userService.login(request);
+        SessionUser sessionUser = new SessionUser(result.getId(), result.getEmail());
 
-    //TODO 로그아웃 logout()
-    //TODO Method : POST, URL : "/logout"
-    //TODO invalidate()
-    //TODO ResponseEntity<Void>
+        session.setAttribute("loginUser", sessionUser);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
+    }
+
+    /**
+     * 로그아웃 세션 무효화
+     * @param sessionUser "loginUser"키 값 DTO
+     * @param session HttpSession 세션
+     * @return ResponseEntity<Void>, NO_CONTENT
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, HttpSession session) {
+
+        if(sessionUser == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
+        session.invalidate();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }
