@@ -17,7 +17,7 @@ public class User extends BaseEntity{   //유저 Entity
     private String email;               //이메일
     @Column(nullable = false, length = 50)
     private String username;            //유저명
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String password;            //비밀번호
 
 

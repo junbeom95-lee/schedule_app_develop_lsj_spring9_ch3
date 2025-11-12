@@ -1,5 +1,6 @@
 package com.schedule.service;
 
+import com.schedule.config.PasswordEncoder;
 import com.schedule.dto.*;
 import com.schedule.entity.User;
 import com.schedule.repository.UserRepository;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
+    private final PasswordEncoder encoder;
     private final UserRepository userRepository;
 
     /**
@@ -25,10 +27,10 @@ public class UserService {
         boolean existence = userRepository.existsByEmail(request.getEmail());
 
         //2. 이메일은 unique 특성으로 하나만 존재 -> 존재하면 throw
-        if (existence) throw new IllegalStateException("존재하는 이메일입니다");
+        if (existence) throw new ServiceException(ExceptionCode.EXIST_EMAIL);
 
         //3. RequestDTO -> Entity
-        User user = new User(request.getEmail(), request.getUsername(), request.getPassword());
+        User user = new User(request.getEmail(), request.getUsername(), encoder.encode(request.getPassword()));
 
         //4. Entity를 저장하고 영속화된 Entity
         User savedUser = userRepository.save(user);
@@ -64,10 +66,11 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. 비밀번호 일치하는지 확인 일치하지 않으면 throw
-        if (!user.getPassword().equals(request.getPassword())) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
+        boolean matchPassword = encoder.matches(request.getPassword(), user.getPassword());
+        if (!matchPassword) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
 
         //3. 영속성 컨텍스트를 활용하여 Entity 변경하여 자동으로 DB 반영
-        user.update(request.getEmail(), request.getUsername(), request.getNewPassword());
+        user.update(request.getEmail(), request.getUsername(), encoder.encode(request.getNewPassword()));
 
         //4. Response DTO 변환 및 반환
         return new UpdateUserResponse(user.getId(), user.getEmail(), user.getUsername(), user.getCreatedAt(), user.getModifiedAt());
@@ -84,8 +87,8 @@ public class UserService {
         User savedUser = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. 비밀번호가 틀리면 throw 맞으면 삭제
-        if (!savedUser.getPassword().equals(request.getPassword())) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
-
+        boolean matchPassword = encoder.matches(request.getPassword(), savedUser.getPassword());
+        if (!matchPassword) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
 
         //3. 있으면 삭제
         userRepository.deleteById(userId);
@@ -102,7 +105,8 @@ public class UserService {
         User savedUser = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. 비밀번호가 틀리면 throw
-        if (!savedUser.getPassword().equals(request.getPassword())) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
+        boolean matchPassword = encoder.matches(request.getPassword(), savedUser.getPassword());
+        if (!matchPassword) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
 
         //3. 이메일과 비밀번호가 일치하면 응답 DTO로 반환
         return new LoginResponse(savedUser.getId(), savedUser.getEmail());
