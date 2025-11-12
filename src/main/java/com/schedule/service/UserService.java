@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
@@ -18,20 +19,21 @@ public class UserService {
      * @param request CreateUserRequest (email, username)
      * @return CreateUserResponse (id, email, username)
      */
-    @Transactional
     public CreateUserResponse create(CreateUserRequest request) {
 
+        //1. 이메일 존재 여부 확인
         boolean existence = userRepository.existsByEmail(request.getEmail());
 
+        //2. 이메일은 unique 특성으로 하나만 존재 -> 존재하면 throw
         if (existence) throw new IllegalStateException("존재하는 이메일입니다");
 
-        //1. RequestDTO -> Entity
+        //3. RequestDTO -> Entity
         User user = new User(request.getEmail(), request.getUsername(), request.getPassword());
 
-        //2. Entity를 저장하고 영속화된 Entity
+        //4. Entity를 저장하고 영속화된 Entity
         User savedUser = userRepository.save(user);
 
-        //3. Entity -> ResponseDTO
+        //5. Entity -> ResponseDTO
         return new CreateUserResponse(savedUser.getId(), savedUser.getEmail(), savedUser.getUsername());
     }
 
@@ -44,7 +46,7 @@ public class UserService {
     public GetUserResponse getUser(Long userId) {
 
         //1. 유저 아이디 조회
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. Response DTO 변환 및 반환
         return new GetUserResponse(user.getId(), user.getEmail(), user.getUsername());
@@ -56,14 +58,13 @@ public class UserService {
      * @param request UpdateUserRequest (email, username, password, newPassword)
      * @return UpdateUserResponse (id, email, username, createdAt, modifiedAt)
      */
-    @Transactional
     public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
 
         //1. 유저 아이디 조회
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. 비밀번호 일치하는지 확인 일치하지 않으면 throw
-        if (!user.getPassword().equals(request.getPassword())) throw new UnauthorizedException("비밀번호가 일치하지 않습니다");
+        if (!user.getPassword().equals(request.getPassword())) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
 
         //3. 영속성 컨텍스트를 활용하여 Entity 변경하여 자동으로 DB 반영
         user.update(request.getEmail(), request.getUsername(), request.getNewPassword());
@@ -77,14 +78,14 @@ public class UserService {
      * @param userId 유저 고유 ID
      * @param request DeleteUserRequest (password)
      */
-    @Transactional
     public void delete(Long userId, DeleteUserRequest request) {
 
         //1. 유저 비밀번호를 확인하기 위해 조회
-        User savedUser = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
+        User savedUser = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. 비밀번호가 틀리면 throw 맞으면 삭제
-        if (!savedUser.getPassword().equals(request.getPassword())) throw new UnauthorizedException("비밀번호가 일치하지 않습니다");
+        if (!savedUser.getPassword().equals(request.getPassword())) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
+
 
         //3. 있으면 삭제
         userRepository.deleteById(userId);
@@ -95,14 +96,13 @@ public class UserService {
      * @param request LoginRequest (email, password)
      * @return LoginResponse (id, email)
      */
-    @Transactional
     public LoginResponse login(LoginRequest request) {
 
         //1. 유저 아이디로 비밀번호도 확인하기 위해 조회
-        User savedUser = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new IllegalStateException("없는 유저입니다"));
+        User savedUser = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. 비밀번호가 틀리면 throw
-        if (!savedUser.getPassword().equals(request.getPassword())) throw new UnauthorizedException("비밀번호가 일치하지 않습니다");
+        if (!savedUser.getPassword().equals(request.getPassword())) throw new ServiceException(ExceptionCode.UN_AUTHORIZED);
 
         //3. 이메일과 비밀번호가 일치하면 응답 DTO로 반환
         return new LoginResponse(savedUser.getId(), savedUser.getEmail());

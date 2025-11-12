@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ScheduleService {
 
@@ -24,11 +25,11 @@ public class ScheduleService {
      * @param request CreateScheduleRequest (username, title, content)
      * @return CreateScheduleResponse (id, username, title, content, createdAt, modifiedAt)
      */
-    @Transactional
+
     public CreateScheduleResponse create(CreateScheduleRequest request) {
 
         //1. 유저 고유 아이디로 User Entity 조회
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new IllegalStateException("없는 유저입니다."));
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
         //2. 요청받은 DTO를 Entity 객체로 변환
         Schedule schedule = new Schedule(user, request.getTitle(), request.getContent());
@@ -63,7 +64,7 @@ public class ScheduleService {
             list = scheduleRepository.findAll();
         } else {
             //1-b. 있으면 username으로 조회
-            User user = userRepository.findById(userId).orElseThrow( () -> new IllegalStateException("없는 유저입니다."));
+            User user = userRepository.findById(userId).orElseThrow( () -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
 
             list = scheduleRepository.findAllByUserId(user.getId());
         }
@@ -91,7 +92,7 @@ public class ScheduleService {
     public GetScheduleResponse getOne(Long scheduleId) {
 
         //1. 일정 찾기
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new IllegalStateException("찾으시는 일정이 없습니다."));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_SCHEDULE));
 
         //2. 찾은 일정을 DTO로 담아 반환
         GetScheduleResponse response = new GetScheduleResponse(
@@ -110,11 +111,10 @@ public class ScheduleService {
      * @param request UpdateScheduleRequest 변경할 title, content
      * @return UpdateScheduleResponse (id, username, title, content, createdAt, modifiedAt)
      */
-    @Transactional
     public UpdateScheduleResponse update(Long scheduleId, UpdateScheduleRequest request) {
 
         //1. id로 일정 조회 없으면 예외 처리
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow( () -> new IllegalStateException("찾으시는 일정이 없습니다."));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow( () -> new ServiceException(ExceptionCode.NOT_FOUND_SCHEDULE));
 
         //2. 영속성 컨텍스트를 활용하여 Entity 변경하여 자동으로 DB 반영
         schedule.update(request.getTitle(), request.getContent());
@@ -135,13 +135,12 @@ public class ScheduleService {
      * 일정 삭제
      * @param scheduleId 일정 고유 ID
      */
-    @Transactional
     public void delete(Long scheduleId) {
         //1. id로 일정이 존재하는지 확인
         boolean existence = scheduleRepository.existsById(scheduleId);
 
         //2. 일정이 없으면 throw 있으면 삭제
-        if (!existence) throw new IllegalStateException("찾으시는 일정이 없습니다.");
+        if (!existence) throw new ServiceException(ExceptionCode.NOT_FOUND_SCHEDULE);
         else scheduleRepository.deleteById(scheduleId);
     }
 }

@@ -3,6 +3,7 @@ package com.schedule.controller;
 import com.schedule.dto.*;
 import com.schedule.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class UserController {
      * @return ResponseEntity<CreateUserResponse> (id, email, username), CREATED
      */
     @PostMapping("/users")
-    public ResponseEntity<CreateUserResponse> create(@RequestBody CreateUserRequest request) {
+    public ResponseEntity<CreateUserResponse> create(@RequestBody @Valid CreateUserRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(request));
     }
 
@@ -41,7 +42,7 @@ public class UserController {
      * @return ResponseEntity<UpdateUserResponse> (id, email, username, createdAt, modifiedAt)
      */
     @PutMapping("/users/{userId}")
-    public ResponseEntity<UpdateUserResponse> update(@PathVariable Long userId, @RequestBody UpdateUserRequest request) {
+    public ResponseEntity<UpdateUserResponse> update(@PathVariable Long userId, @RequestBody @Valid UpdateUserRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
     }
 
@@ -52,7 +53,7 @@ public class UserController {
      * @return ResponseEntity<Void> NO_CONTENT
      */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Void> delete(@PathVariable Long userId, @RequestBody DeleteUserRequest request) {
+    public ResponseEntity<Void> delete(@PathVariable Long userId, @RequestBody @Valid DeleteUserRequest request) {
         userService.delete(userId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -64,7 +65,7 @@ public class UserController {
      * @return ResponseEntity<LoginResponse> (id, email), OK
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpSession session) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpSession session) {
         LoginResponse result = userService.login(request);
         SessionUser sessionUser = new SessionUser(result.getId(), result.getEmail());
 

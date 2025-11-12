@@ -1,15 +1,13 @@
 package com.schedule.dto;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public class ServiceException extends RuntimeException {
 
-    private final HttpStatus status;
+    private final ExceptionCode exceptionCode;
 
-    public ServiceException(String message, HttpStatus status) {
-        super(message);
-        this.status = status;
+    public ServiceException(ExceptionCode exceptionCode) {
+        this.exceptionCode = exceptionCode;
     }
 }
