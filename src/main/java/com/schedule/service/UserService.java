@@ -23,7 +23,7 @@ public class UserService {
 
         boolean existence = userRepository.existsByEmail(request.getEmail());
 
-        if (!existence) throw new IllegalStateException("존재하는 이메일입니다");
+        if (existence) throw new IllegalStateException("존재하는 이메일입니다");
 
         //1. RequestDTO -> Entity
         User user = new User(request.getEmail(), request.getUsername(), request.getPassword());
