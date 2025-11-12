@@ -13,6 +13,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
+    //TODO 회원가입 시 이메일 존재 여부 확인 -> 이미 있는 이메일 예외처리
     /**
      * 유저 생성
      * @param request CreateUserRequest (email, username)
@@ -85,4 +86,10 @@ public class UserService {
         //3. 있으면 삭제
         userRepository.deleteById(userId);
     }
+
+    //TODO 로그인 login()
+    //TODO Param LoginRequest (email, password)
+    //TODO 이메일과 비밀번호가 일치하는지 확인
+    //TODO Return LoginResponse (id, email)
+
 }

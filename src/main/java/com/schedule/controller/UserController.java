@@ -55,4 +55,16 @@ public class UserController {
         userService.delete(userId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    //TODO 로그인 login()
+    //TODO Method : POST, URL : "/login"
+    //TODO RequestBody LoginRequest (email, password)
+    //TODO setAttribute
+    //TODO ResponseEntity<LoginResponse> (id, email)
+
+    //TODO 로그아웃 logout()
+    //TODO Method : POST, URL : "/logout"
+    //TODO invalidate()
+    //TODO ResponseEntity<Void>
+
 }
