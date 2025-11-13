@@ -76,9 +76,30 @@ public class CommentService {
         return response;
     }
 
-    //TODO 댓글 수정 update()
-    //TODO Param Long commentId
-    //TODO Return UpdateCommentResponse id, userId, scheduleId, content, createdAt, modifiedAt)
+    /**
+     * 댓글 수정
+     * @param commentId 댓글 고유 ID
+     * @param request UpdateCommentRequest (변경할 내용)
+     * @return UpdateCommentResponse (id, userId, scheduleId, content, createdAt, modifiedAt)
+     */
+    public UpdateCommentResponse update(Long commentId, UpdateCommentRequest request) {
+
+        //1. commentId로 댓글 조회
+        Comment savedComment = commentRepository.findById(commentId).orElseThrow(
+                () -> new ServiceException(ExceptionCode.NOT_FOUND_COMMENT));
+
+        //2. 영속성 컨텍스트 Entity 변경하여 DB 자동 반영
+        savedComment.update(request.getContent());
+
+        //3. DTO로 변환 및 반환
+        return new UpdateCommentResponse(
+                savedComment.getId(),
+                savedComment.getUser().getId(),
+                savedComment.getSchedule().getId(),
+                savedComment.getContent(),
+                savedComment.getCreatedAt(),
+                savedComment.getModifiedAt());
+    }
 
     //TODO 댓글 삭제 delete()
     //TODO Param Long commentId

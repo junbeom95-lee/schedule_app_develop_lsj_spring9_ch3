@@ -1,8 +1,6 @@
 package com.schedule.controller;
 
-import com.schedule.dto.CreateCommentRequest;
-import com.schedule.dto.CreateCommentResponse;
-import com.schedule.dto.GetCommentResponse;
+import com.schedule.dto.*;
 import com.schedule.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -40,10 +38,16 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getAll(scheduleId));
     }
 
-    //TODO 댓글 수정 update()
-    //TODO Method : PUT,  URL : "/schedules/comments/{commentId}"
-    //TODO PathVariable Long commentId
-    //TODO ResponseEntity<UpdateCommentResponse> (id, userId, scheduleId, content, createdAt, modifiedAt) OK
+    /**
+     * 댓글 수정
+     * @param commentId 댓글 고유 ID
+     * @param request 변경할 내용
+     * @return OK, UpdateCommentResponse (id, userId, scheduleId, content, createdAt, modifiedAt)
+     */
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<UpdateCommentResponse> update(@PathVariable Long commentId, @RequestBody UpdateCommentRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, request));
+    }
 
     //TODO 댓글 삭제 delete()
     //TODO Method : DELETE,  URL : "/schedules/comments/{commentId}"
