@@ -20,7 +20,6 @@ public class User extends BaseEntity{   //유저 Entity
     @Column(nullable = false)
     private String password;            //비밀번호
 
-
     public User(String email, String username, String password) {
         this.email = email;
         this.username = username;

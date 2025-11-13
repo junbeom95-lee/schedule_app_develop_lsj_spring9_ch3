@@ -1,9 +1,12 @@
 package com.schedule.controller;
 
+import com.schedule.dto.CreateCommentRequest;
+import com.schedule.dto.CreateCommentResponse;
 import com.schedule.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -12,11 +15,16 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    //TODO 댓글 생성 create()
-    //TODO Method : POST, URL : "/schedules/{scheduleId}/comments"
-    //TODO PathVariable Long scheduleId
-    //TODO RequestBody CreateCommentRequest (userId, content)
-    //TODO ResponseEntity<CreateCommentResponse> (id, userId, scheduleId, content, createdAt) CREATED
+    /**
+     * 댓글 생성
+     * @param scheduleId 일정 고유 ID
+     * @param request CreateCommentRequest (userId, content)
+     * @return CREATED, CreateCommentResponse (id, userId, scheduleId, content, createdAt)
+     */
+    @PostMapping("/{scheduleId}/comments")
+    public ResponseEntity<CreateCommentResponse> create(@PathVariable Long scheduleId, @RequestBody CreateCommentRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.create(scheduleId, request));
+    }
 
     //TODO 댓글 일정 기준 조회 getAll()
     //TODO Method : GET, URL : "/schedules/{scheduleId}/comments"
