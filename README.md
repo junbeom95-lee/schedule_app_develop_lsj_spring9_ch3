@@ -12,7 +12,7 @@
 ---
 ## ERD 구조
 
-<img width="1154" height="180" alt="image" src="https://github.com/user-attachments/assets/8bc08c66-2c88-46d8-a594-9112b0948241" />
+<img width="1217" height="457" alt="image" src="https://github.com/user-attachments/assets/fc97b3ee-1ad4-40f6-943d-754681d71edf" />
 
 ---
 ## 주요 기능
@@ -22,9 +22,9 @@
 
 ---
 ## API 명세서
-<img width="781" height="697" alt="image" src="https://github.com/user-attachments/assets/6c1aa78f-8901-4bd2-9590-cc9111010941" />
+<img width="904" height="953" alt="image" src="https://github.com/user-attachments/assets/9b2d2653-e9ac-4a9b-847f-041c6229a909" />
 
-https://www.notion.so/API-2a4555a1c11f8094b643ca1db5020592?source=copy_link
+### https://www.notion.so/API-2a4555a1c11f8094b643ca1db5020592?source=copy_link
 
 ---
 ## 기술 스택
@@ -43,3 +43,5 @@ https://www.notion.so/API-2a4555a1c11f8094b643ca1db5020592?source=copy_link
 
 ---
 ## 트러블 슈팅 기록
+
+### https://www.notion.so/Develop-2a7555a1c11f8080a821ea8e321c66e8?source=copy_link
