@@ -101,7 +101,17 @@ public class CommentService {
                 savedComment.getModifiedAt());
     }
 
-    //TODO 댓글 삭제 delete()
-    //TODO Param Long commentId
-    //TODO Return Void
+    /**
+     * 댓글 삭제
+     * @param commentId 댓글 고유 ID
+     */
+    public void delete(Long commentId) {
+
+        //1. commentId로 조회하여 있는지 여부 확인
+        boolean existence = commentRepository.existsById(commentId);
+
+        //2. 없으면 예외 처리 있으면 삭제
+        if(!existence) throw new ServiceException(ExceptionCode.NOT_FOUND_COMMENT);
+        commentRepository.deleteById(commentId);
+    }
 }

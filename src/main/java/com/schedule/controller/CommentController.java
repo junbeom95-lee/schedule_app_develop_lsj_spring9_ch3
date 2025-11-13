@@ -49,9 +49,15 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, request));
     }
 
-    //TODO 댓글 삭제 delete()
-    //TODO Method : DELETE,  URL : "/schedules/comments/{commentId}"
-    //TODO PathVariable Long commentId
-    //TODO ResponseEntity<Void> NO_CONTENT
+    /**
+     * 댓글 삭제
+     * @param commentId 댓글 고유 ID
+     * @return NO_CONTENT
+     */
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Void> delete(@PathVariable Long commentId) {
+        commentService.delete(commentId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }
