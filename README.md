@@ -22,7 +22,8 @@
 
 ---
 ## API 명세서
-<img width="904" height="953" alt="image" src="https://github.com/user-attachments/assets/9b2d2653-e9ac-4a9b-847f-041c6229a909" />
+
+<img width="830" height="953" alt="image" src="https://github.com/user-attachments/assets/dd72f926-7866-4b1f-a7dd-b46cdcb30523" />
 
 ### https://www.notion.so/API-2a4555a1c11f8094b643ca1db5020592?source=copy_link
 
