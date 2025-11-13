@@ -2,11 +2,14 @@ package com.schedule.controller;
 
 import com.schedule.dto.CreateCommentRequest;
 import com.schedule.dto.CreateCommentResponse;
+import com.schedule.dto.GetCommentResponse;
 import com.schedule.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,10 +29,16 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.create(scheduleId, request));
     }
 
-    //TODO 댓글 일정 기준 조회 getAll()
-    //TODO Method : GET, URL : "/schedules/{scheduleId}/comments"
-    //TODO PathVariable Long scheduleId
-    //TODO ResponseEntity<List<GetCommentResponse>> (id, userId, scheduleId, content, createdAt, modifiedAt) OK
+    /**
+     * 댓글 일정 기준 조회
+     * @param scheduleId 일정 고유 ID
+     * @return OK, List<GetCommentResponse> (id, userId, scheduleId, content, createdAt, modifiedAt)
+     */
+    @GetMapping("/{scheduleId}/comments")
+    public ResponseEntity<List<GetCommentResponse>> getAll(@PathVariable Long scheduleId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.getAll(scheduleId));
+    }
 
     //TODO 댓글 수정 update()
     //TODO Method : PUT,  URL : "/schedules/comments/{commentId}"

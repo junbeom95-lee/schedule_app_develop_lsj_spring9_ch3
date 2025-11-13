@@ -1,9 +1,6 @@
 package com.schedule.service;
 
-import com.schedule.dto.CreateCommentRequest;
-import com.schedule.dto.CreateCommentResponse;
-import com.schedule.dto.ExceptionCode;
-import com.schedule.dto.ServiceException;
+import com.schedule.dto.*;
 import com.schedule.entity.Comment;
 import com.schedule.entity.Schedule;
 import com.schedule.entity.User;
@@ -13,6 +10,9 @@ import com.schedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -52,10 +52,29 @@ public class CommentService {
                 saveComment.getCreatedAt());
     }
 
-    //TODO 댓글 일정 기준 조회 getAll()
-    //TODO Transactional(readOnly = true)
-    //TODO Param Long scheduleId
-    //TODO Return List<GetCommentResponse> (id, userId, scheduleId, content, createdAt, modifiedAt)
+    /**
+     * 댓글 일정 기준 조회
+     * @param scheduleId 일정 고유 ID
+     * @return List<GetCommentResponse> (id, userId, scheduleId, content, createdAt, modifiedAt)
+     */
+    @Transactional(readOnly = true)
+    public List<GetCommentResponse> getAll(Long scheduleId) {
+
+        //1. scheduleId로 댓글들 조회
+        List<Comment> commentList = commentRepository.findAllBySchedule_Id(scheduleId);
+
+        //2. List<Entity> 를 List<DTO> 로 변환
+        List<GetCommentResponse> response = commentList.stream().map(comment ->
+            new GetCommentResponse(comment.getId(),
+                    comment.getUser().getId(),
+                    comment.getSchedule().getId(),
+                    comment.getContent(),
+                    comment.getCreatedAt(),
+                    comment.getModifiedAt())).collect(Collectors.toList());
+
+        //3. List<DTO> 반환
+        return response;
+    }
 
     //TODO 댓글 수정 update()
     //TODO Param Long commentId
