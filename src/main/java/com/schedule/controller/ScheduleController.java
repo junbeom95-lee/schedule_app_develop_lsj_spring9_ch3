@@ -28,6 +28,10 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    //TODO 페이지 번호와 페이지 크기를 쿼리 파라미터로 전달하여 요청
+    //TODO RequestParam 으로 (Long pageNumber , Long pageSize)
+    //TODO 할일 제목, 할일 내용, 댓글 개수, 일정 작성일, 일정 수정일, 일정 작성 유저명 조회 *
+
     /**
      * 일정 조회 다건
      * @param userId 유저 고유 ID

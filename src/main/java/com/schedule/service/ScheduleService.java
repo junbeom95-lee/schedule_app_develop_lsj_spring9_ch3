@@ -56,6 +56,12 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public List<GetScheduleResponse> getAll(Long userId) {
 
+        //TODO Param Long userId, Long pageNumber , Long pageSize
+        //TODO Sort desc -> Sort.by(Sort.Direction.DESC, "modifiedAt")
+        //TODO Sort.by("modified_at").descending();
+        //TODO 할일 제목, 할일 내용, 댓글 개수, 일정 작성일, 일정 수정일, 일정 작성 유저명 조회 *
+        //TODO Page<GetScheduleResponse>
+
         List<Schedule> list;
 
         //1. username을 확인
