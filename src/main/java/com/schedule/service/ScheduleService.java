@@ -3,29 +3,35 @@ package com.schedule.service;
 import com.schedule.dto.*;
 import com.schedule.entity.Schedule;
 import com.schedule.entity.User;
+import com.schedule.repository.CommentRepository;
 import com.schedule.repository.ScheduleRepository;
 import com.schedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedModel;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ScheduleService {
 
-    private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final CommentRepository commentRepository;
 
     /**
      * 일정 생성
      * @param request CreateScheduleRequest (username, title, content)
      * @return CreateScheduleResponse (id, username, title, content, createdAt, modifiedAt)
      */
-
     public CreateScheduleResponse create(CreateScheduleRequest request) {
 
         //1. 유저 고유 아이디로 User Entity 조회
@@ -49,44 +55,59 @@ public class ScheduleService {
     }
 
     /**
-     * 일정 조회 다건
+     * 일정 페이징 조회
      * @param userId 유저 고유 ID
-     * @return List<GetScheduleResponse> (id, username, title, content, createdAt, modifiedAt)
+     * @param pageNumber 페이지 번호
+     * @param pageSize 페이지 크기
+     * @return PagedModel<GetSchedulePageResponse> 페이징 DTO (id, userId, title, content, commentCount, createdAt, modifiedAt)
      */
     @Transactional(readOnly = true)
-    public List<GetScheduleResponse> getAll(Long userId) {
+    public PagedModel<GetSchedulePageResponse> getAll(Long userId, int pageNumber, int pageSize) {
 
-        //TODO Param Long userId, Long pageNumber , Long pageSize
-        //TODO Sort desc -> Sort.by(Sort.Direction.DESC, "modifiedAt")
-        //TODO Sort.by("modified_at").descending();
-        //TODO 할일 제목, 할일 내용, 댓글 개수, 일정 작성일, 일정 수정일, 일정 작성 유저명 조회 *
-        //TODO Page<GetScheduleResponse>
+        //1. 페이지 번호 default는 처음으로, 페이지 크기 default는 10으로 적용
+        if(pageNumber < 1) pageNumber = 0;
+        if(pageSize == 0) pageSize = 10;
 
-        List<Schedule> list;
+        //2. 페이지 번호와 페이지 크기 및 수정일 기준으로 내림차순 정렬 설정
+        Sort sort = Sort.by("modifiedAt").descending();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
 
-        //1. username을 확인
+        Page<Schedule> schedulePage;
+
+        //3. username을 확인
         if (userId == null) {
-            //1-a. 없으면 모두 조회
-            list = scheduleRepository.findAll();
+            //3-a. 없으면 모두 조회
+            schedulePage = scheduleRepository.findAll(pageable);
         } else {
-            //1-b. 있으면 username으로 조회
-            User user = userRepository.findById(userId).orElseThrow( () -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
-
-            list = scheduleRepository.findAllByUserId(user.getId());
+            //3-b. 있으면 username으로 조회
+            User user = userRepository.findById(userId).orElseThrow(() -> new ServiceException(ExceptionCode.NOT_FOUND_USER));
+            schedulePage = scheduleRepository.findAllByUserId(user.getId(), pageable);
         }
 
-        //2. List<Entity>에서 List<DTO>로 변환 및 반환
-        List<GetScheduleResponse> responseList = new ArrayList<>();
-        for (Schedule schedule : list) {
-            responseList.add(new GetScheduleResponse(schedule.getId(),
-                    schedule.getUser().getId(),
-                    schedule.getTitle(),
-                    schedule.getContent(),
-                    schedule.getCreatedAt(),
-                    schedule.getModifiedAt()));
-        }
+        //4. 일정 ID List로 댓글 개수 조회
+        List<ScheduleCommentDTO> ScheduleIdCommentCount = commentRepository.countCommentByScheduleIdList();
 
-        return responseList;
+        //5. Page<Entity>에서 Page<DTO>로 변환 및 반환
+        Page<GetSchedulePageResponse> responsePage = schedulePage.map(s -> {
+            //5-1. 댓글 개수 확인
+            Long count = ScheduleIdCommentCount.stream()
+                    .filter(dto -> Objects.equals(dto.getScheduleId(), s.getId()))
+                    .map(ScheduleCommentDTO::getCount)
+                    .findFirst().orElse(0L);
+
+            //5-2. 응답 DTO로 반환
+            return new GetSchedulePageResponse(
+                    s.getId(),
+                    s.getUser().getId(),
+                    s.getTitle(),
+                    s.getContent(),
+                    count,
+                    s.getCreatedAt(),
+                    s.getModifiedAt());
+        });
+
+        //6. PagedModel로 바꿔서 반환
+        return new PagedModel<>(responsePage);
     }
 
     /**

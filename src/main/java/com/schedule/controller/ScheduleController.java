@@ -3,6 +3,8 @@ package com.schedule.controller;
 import com.schedule.dto.*;
 import com.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,19 +30,20 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
-    //TODO 페이지 번호와 페이지 크기를 쿼리 파라미터로 전달하여 요청
-    //TODO RequestParam 으로 (Long pageNumber , Long pageSize)
-    //TODO 할일 제목, 할일 내용, 댓글 개수, 일정 작성일, 일정 수정일, 일정 작성 유저명 조회 *
-
     /**
-     * 일정 조회 다건
+     * 일정 페이징 조회
      * @param userId 유저 고유 ID
-     * @return ResponseEntity<List<GetScheduleResponse>> (id, userId, title, content, createdAt, modifiedAt)
+     * @param pageNumber 페이지 번호
+     * @param pageSize 페이지 크기
+     * @return esponseEntity<PagedModel<GetSchedulePageResponse>> (id, userId, title, content, commentCount, createdAt, modifiedAt)
      */
     @GetMapping("/schedules")
-    public ResponseEntity<List<GetScheduleResponse>> getAll(@RequestParam(required = false) Long userId) {
+    public ResponseEntity<PagedModel<GetSchedulePageResponse>> getAll(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) int pageNumber,
+            @RequestParam(required = false) int pageSize) {
 
-        List<GetScheduleResponse> resultList = scheduleService.getAll(userId);
+        PagedModel<GetSchedulePageResponse> resultList = scheduleService.getAll(userId, pageNumber, pageSize);
 
         return ResponseEntity.status(HttpStatus.OK).body(resultList);
     }
