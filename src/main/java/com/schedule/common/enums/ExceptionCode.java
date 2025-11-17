@@ -10,8 +10,8 @@ public enum ExceptionCode {     //Exception Notion (예외 enum)
     EXIST_EMAIL(HttpStatus.BAD_REQUEST, "존재하는 이메일입니다"),
     NOT_FOUND_SCHEDULE(HttpStatus.BAD_REQUEST, "찾으시는 일정이없습니다"),
     UN_AUTHORIZED(HttpStatus.UNAUTHORIZED, "이메일과 비밀번호가 일치하지 않습니다"),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "접근할 수 없습니다 로그인 해주세요"),
     NOT_FOUND_COMMENT(HttpStatus.BAD_REQUEST, "댓글이 존재하지 않습니다");
-
 
     private final HttpStatus status;
     private final String message;

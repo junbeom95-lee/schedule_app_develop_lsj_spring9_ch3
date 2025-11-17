@@ -1,5 +1,6 @@
 package com.schedule.domain.user.controller;
 
+import com.schedule.common.model.CommonResponse;
 import com.schedule.domain.user.model.dto.*;
 import com.schedule.domain.user.model.request.CreateUserRequest;
 import com.schedule.domain.user.model.request.DeleteUserRequest;
@@ -24,9 +25,12 @@ public class UserController {
      * @param request CreateUserRequest (email, username, password)
      * @return ResponseEntity<CreateUserResponse> (id, email, username), CREATED
      */
-    @PostMapping("/users")
-    public ResponseEntity<CreateUserResponse> create(@RequestBody @Valid CreateUserRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(request));
+    @PostMapping("/signup")
+    public ResponseEntity<CommonResponse<?>> create(@RequestBody @Valid CreateUserRequest request) {
+
+        CommonResponse<?> result = userService.create(request);
+
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -35,8 +39,11 @@ public class UserController {
      * @return ResponseEntity<GetUserResponse> (id, email, username)
      */
     @GetMapping("/users/{userId}")
-    public ResponseEntity<GetUserResponse> getUser(@PathVariable Long userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUser(userId));
+    public ResponseEntity<CommonResponse<?>> getUser(@PathVariable Long userId) {
+
+        CommonResponse<?> result = userService.getUser(userId);
+
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -46,8 +53,11 @@ public class UserController {
      * @return ResponseEntity<UpdateUserResponse> (id, email, username, createdAt, modifiedAt)
      */
     @PutMapping("/users/{userId}")
-    public ResponseEntity<UpdateUserResponse> update(@PathVariable Long userId, @RequestBody @Valid UpdateUserRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, request));
+    public ResponseEntity<CommonResponse<?>> update(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long userId, @RequestBody @Valid UpdateUserRequest request) {
+
+        CommonResponse<?> result = userService.update(sessionUser, userId, request);
+
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -57,9 +67,11 @@ public class UserController {
      * @return ResponseEntity<Void> NO_CONTENT
      */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Void> delete(@PathVariable Long userId, @RequestBody @Valid DeleteUserRequest request) {
-        userService.delete(userId, request);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long userId, @RequestBody @Valid DeleteUserRequest request) {
+
+        CommonResponse<?> result = userService.delete(sessionUser, userId, request);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     /**
@@ -69,11 +81,16 @@ public class UserController {
      * @return ResponseEntity<LoginResponse> (id, email), OK
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpSession session) {
-        LoginResponse result = userService.login(request);
-        SessionUser sessionUser = new SessionUser(result.getId(), result.getEmail());
+    public ResponseEntity<CommonResponse<?>> login(@RequestBody @Valid LoginRequest request, HttpSession session) {
+
+        CommonResponse<LoginResponse> result = userService.login(request);
+
+        LoginResponse loginResponse = result.getContent();
+
+        SessionUser sessionUser = new SessionUser(loginResponse.getId(), loginResponse.getEmail());
 
         session.setAttribute("loginUser", sessionUser);
+
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
@@ -84,7 +101,7 @@ public class UserController {
      * @return ResponseEntity<Void>, NO_CONTENT
      */
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, HttpSession session) {
+    public ResponseEntity<CommonResponse<?>> logout(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, HttpSession session) {
 
         if(sessionUser == null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 

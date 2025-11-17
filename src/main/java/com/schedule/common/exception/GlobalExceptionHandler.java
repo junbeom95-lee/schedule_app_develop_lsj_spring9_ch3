@@ -1,6 +1,6 @@
 package com.schedule.common.exception;
 
-import com.schedule.common.model.ErrorResponse;
+import com.schedule.common.model.CommonResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -20,14 +20,13 @@ public class GlobalExceptionHandler {
      * @param e ServiceException (ExceptionCode(HttpStatus, message))
      * @return ErrorResponse (HttpStatus, message)
      */
-    @ExceptionHandler(ServiceException.class)
-    public ResponseEntity<ErrorResponse> serviceException(ServiceException e) {
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<CommonResponse<?>> serviceException(CustomException e) {
 
-        ErrorResponse response = new ErrorResponse(e.getExceptionCode().getStatus(), e.getExceptionCode().getMessage());
+        CommonResponse<String> response = new CommonResponse<>(e.getExceptionCode().getStatus(), e.getMessage());
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
-
 
     /**
      * 유저의 입력에 대한 검증 수행해서 잘못된 값이 들어왔을 때 예외 처리
@@ -35,11 +34,11 @@ public class GlobalExceptionHandler {
      * @return ErrorResponse (HttpStatus, message)
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<CommonResponse<?>> methodArgumentNotValidException(MethodArgumentNotValidException e) {
 
-        String message = getErrorMessage(e);
+        HashMap<String, String> message = getErrorMessage(e);
 
-        ErrorResponse response = new ErrorResponse(HttpStatus.BAD_REQUEST, message);
+        CommonResponse<HashMap<String, String>> response = new CommonResponse<>(HttpStatus.BAD_REQUEST, message);
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
@@ -49,7 +48,7 @@ public class GlobalExceptionHandler {
      * @param e MethodArgumentNotValidException (valid exception)
      * @return 에러를 모은 map을 String으로 만들어 반환
      */
-    private String getErrorMessage(MethodArgumentNotValidException e) {
+    private HashMap<String, String> getErrorMessage(MethodArgumentNotValidException e) {
 
         //1. Valid로 검증한 모든 에러들
         List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
@@ -60,6 +59,6 @@ public class GlobalExceptionHandler {
             map.put(((FieldError)error).getField(), error.getDefaultMessage())
         );
 
-        return map.toString();
+        return map;
     }
 }

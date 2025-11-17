@@ -1,5 +1,6 @@
 package com.schedule.domain.schedule.controller;
 
+import com.schedule.common.model.CommonResponse;
 import com.schedule.domain.schedule.model.dto.CreateScheduleResponse;
 import com.schedule.domain.schedule.model.dto.GetSchedulePageResponse;
 import com.schedule.domain.schedule.model.dto.GetScheduleResponse;
@@ -7,6 +8,7 @@ import com.schedule.domain.schedule.model.dto.UpdateScheduleResponse;
 import com.schedule.domain.schedule.model.request.CreateScheduleRequest;
 import com.schedule.domain.schedule.model.request.UpdateScheduleRequest;
 import com.schedule.domain.schedule.service.ScheduleService;
+import com.schedule.domain.user.model.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
@@ -21,15 +23,16 @@ public class ScheduleController {
 
     /**
      * 일정 생성
-     * @param request CreateScheduleRequest (userId, title, content)
-     * @return ResponseEntity<CreateScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
+     * @param sessionUser 세선(id, email)
+     * @param request CreateScheduleRequest (title, content)
+     * @return CREATED, (id, userId, title, content, createdAt, modifiedAt)
      */
     @PostMapping("/schedules")
-    public ResponseEntity<CreateScheduleResponse> create(@RequestBody CreateScheduleRequest request) {
+    public ResponseEntity<CommonResponse<?>> create(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @RequestBody CreateScheduleRequest request) {
 
-        CreateScheduleResponse result = scheduleService.create(request);
+        CommonResponse<?> result = scheduleService.create(sessionUser, request);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -40,14 +43,14 @@ public class ScheduleController {
      * @return esponseEntity<PagedModel<GetSchedulePageResponse>> (id, userId, title, content, commentCount, createdAt, modifiedAt)
      */
     @GetMapping("/schedules")
-    public ResponseEntity<PagedModel<GetSchedulePageResponse>> getAll(
+    public ResponseEntity<CommonResponse<?>> getAll(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) int pageNumber,
             @RequestParam(required = false) int pageSize) {
 
-        PagedModel<GetSchedulePageResponse> resultList = scheduleService.getAll(userId, pageNumber, pageSize);
+        CommonResponse<?> result = scheduleService.getAll(userId, pageNumber, pageSize);
 
-        return ResponseEntity.status(HttpStatus.OK).body(resultList);
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -56,11 +59,11 @@ public class ScheduleController {
      * @return ResponseEntity<GetOneScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
      */
     @GetMapping("/schedules/{scheduleId}")
-    public ResponseEntity<GetScheduleResponse> getOne(@PathVariable Long scheduleId) {
+    public ResponseEntity<CommonResponse<?>> getOne(@PathVariable Long scheduleId) {
 
-        GetScheduleResponse result = scheduleService.getOne(scheduleId);
+        CommonResponse<?> result = scheduleService.getOne(scheduleId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -70,11 +73,11 @@ public class ScheduleController {
      * @return ResponseEntity<UpdateScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
      */
     @PutMapping("/schedules/{scheduleId}")
-    public ResponseEntity<UpdateScheduleResponse> update(@PathVariable Long scheduleId, @RequestBody UpdateScheduleRequest request) {
+    public ResponseEntity<CommonResponse<?>> update(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long scheduleId, @RequestBody UpdateScheduleRequest request) {
 
-        UpdateScheduleResponse result = scheduleService.update(scheduleId, request);
+        CommonResponse<?> result = scheduleService.update(sessionUser, scheduleId, request);
 
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -83,8 +86,8 @@ public class ScheduleController {
      * @return ResponseEntity<Void> NO_CONTENT
      */
     @DeleteMapping("/schedules/{scheduleId}")
-    public ResponseEntity<Void> delete(@PathVariable Long scheduleId) {
-        scheduleService.delete(scheduleId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long scheduleId) {
+        CommonResponse<?> result = scheduleService.delete(sessionUser, scheduleId);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }

@@ -1,17 +1,14 @@
 package com.schedule.domain.comment.controller;
 
-import com.schedule.domain.comment.model.dto.CreateCommentResponse;
-import com.schedule.domain.comment.model.dto.GetCommentResponse;
-import com.schedule.domain.comment.model.dto.UpdateCommentResponse;
+import com.schedule.common.model.CommonResponse;
 import com.schedule.domain.comment.model.request.CreateCommentRequest;
 import com.schedule.domain.comment.model.request.UpdateCommentRequest;
 import com.schedule.domain.comment.service.CommentService;
+import com.schedule.domain.user.model.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,35 +19,45 @@ public class CommentController {
 
     /**
      * 댓글 생성
+     * @param sessionUser 세션(id, email)
      * @param scheduleId 일정 고유 ID
-     * @param request CreateCommentRequest (userId, content)
-     * @return CREATED, CreateCommentResponse (id, userId, scheduleId, content, createdAt)
+     * @param request CreateCommentRequest(content)
+     * @return (id, userId, scheduleId, content, createdAt)
      */
     @PostMapping("/{scheduleId}/comments")
-    public ResponseEntity<CreateCommentResponse> create(@PathVariable Long scheduleId, @RequestBody CreateCommentRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.create(scheduleId, request));
+    public ResponseEntity<CommonResponse<?>> create(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long scheduleId, @RequestBody CreateCommentRequest request) {
+
+        CommonResponse<?> result = commentService.create(sessionUser, scheduleId, request);
+
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
      * 댓글 일정 기준 조회
      * @param scheduleId 일정 고유 ID
-     * @return OK, List<GetCommentResponse> (id, userId, scheduleId, content, createdAt, modifiedAt)
+     * @return OK, (id, userId, scheduleId, content, createdAt, modifiedAt)
      */
     @GetMapping("/{scheduleId}/comments")
-    public ResponseEntity<List<GetCommentResponse>> getAll(@PathVariable Long scheduleId) {
+    public ResponseEntity<CommonResponse<?>> getAll(@PathVariable Long scheduleId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.getAll(scheduleId));
+        CommonResponse<?> result = commentService.getAll(scheduleId);
+
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
      * 댓글 수정
+     * @param sessionUser 세선(id, email)
      * @param commentId 댓글 고유 ID
      * @param request 변경할 내용
-     * @return OK, UpdateCommentResponse (id, userId, scheduleId, content, createdAt, modifiedAt)
+     * @return OK, (id, userId, scheduleId, content, createdAt, modifiedAt)
      */
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<UpdateCommentResponse> update(@PathVariable Long commentId, @RequestBody UpdateCommentRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.update(commentId, request));
+    public ResponseEntity<CommonResponse<?>> update(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long commentId, @RequestBody UpdateCommentRequest request) {
+
+        CommonResponse<?> result = commentService.update(sessionUser, commentId, request);
+
+        return ResponseEntity.status(result.getStatus()).body(result);
     }
 
     /**
@@ -59,9 +66,8 @@ public class CommentController {
      * @return NO_CONTENT
      */
     @DeleteMapping("/comments/{commentId}")
-    public ResponseEntity<Void> delete(@PathVariable Long commentId) {
-        commentService.delete(commentId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long commentId) {
+        CommonResponse<?> response = commentService.delete(sessionUser, commentId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
 }

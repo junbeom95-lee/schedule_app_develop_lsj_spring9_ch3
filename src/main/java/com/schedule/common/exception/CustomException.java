@@ -4,11 +4,12 @@ import com.schedule.common.enums.ExceptionCode;
 import lombok.Getter;
 
 @Getter
-public class ServiceException extends RuntimeException {
+public class CustomException extends RuntimeException {
 
     private final ExceptionCode exceptionCode;
 
-    public ServiceException(ExceptionCode exceptionCode) {
+    public CustomException(ExceptionCode exceptionCode) {
+        super(exceptionCode.getMessage());
         this.exceptionCode = exceptionCode;
     }
 }
