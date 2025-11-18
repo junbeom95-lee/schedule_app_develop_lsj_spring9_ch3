@@ -60,7 +60,7 @@ public class UserIntegrationTest {
         System.out.println("회원 가입 Response : " + resultJson);
     }
 
-    @DisplayName(value = "로그인 및 로그아웃 테스트")
+    @DisplayName(value = "로그인 테스트")
     @Test
     void loginTest() throws Exception {
 

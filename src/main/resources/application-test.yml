@@ -14,7 +14,7 @@ spring:
   # jpa
   jpa:
     hibernate:
-      ddl-auto: create-drop # Test한 후 지움
+      ddl-auto: create-drop # Test 후 지움
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect

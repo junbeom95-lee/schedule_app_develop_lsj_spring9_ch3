@@ -40,7 +40,7 @@ public class ScheduleController {
      * @param userId 유저 고유 ID
      * @param pageNumber 페이지 번호
      * @param pageSize 페이지 크기
-     * @return esponseEntity<PagedModel<GetSchedulePageResponse>> (id, userId, title, content, commentCount, createdAt, modifiedAt)
+     * @return OK, (id, userId, title, content, commentCount, createdAt, modifiedAt)
      */
     @GetMapping("/schedules")
     public ResponseEntity<CommonResponse<?>> getAll(
@@ -56,7 +56,7 @@ public class ScheduleController {
     /**
      * 일정 조회 단건
      * @param scheduleId 일정 고유 ID
-     * @return ResponseEntity<GetOneScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
+     * @return OK, (id, userId, title, content, createdAt, modifiedAt)
      */
     @GetMapping("/schedules/{scheduleId}")
     public ResponseEntity<CommonResponse<?>> getOne(@PathVariable Long scheduleId) {
@@ -70,7 +70,7 @@ public class ScheduleController {
      * 일정 수정
      * @param scheduleId 일정 고유 ID
      * @param request UpdateScheduleRequest (title, content)
-     * @return ResponseEntity<UpdateScheduleResponse> (id, userId, title, content, createdAt, modifiedAt)
+     * @return OK, (id, userId, title, content, createdAt, modifiedAt)
      */
     @PutMapping("/schedules/{scheduleId}")
     public ResponseEntity<CommonResponse<?>> update(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long scheduleId, @RequestBody UpdateScheduleRequest request) {
@@ -83,7 +83,7 @@ public class ScheduleController {
     /**
      * 일정 삭제
      * @param scheduleId 일정 고유 ID
-     * @return ResponseEntity<Void> NO_CONTENT
+     * @return NO_CONTENT, null
      */
     @DeleteMapping("/schedules/{scheduleId}")
     public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long scheduleId) {
