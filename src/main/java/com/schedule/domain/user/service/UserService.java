@@ -75,7 +75,7 @@ public class UserService {
      * @param request UpdateUserRequest (email, username, password, newPassword)
      * @return (id, email, username, createdAt, modifiedAt)
      */
-    public CommonResponse<?> update(SessionUser sessionUser, Long userId, UpdateUserRequest request) {
+    public CommonResponse<UpdateUserResponse> update(SessionUser sessionUser, Long userId, UpdateUserRequest request) {
 
         //1. 세션 아이디와 삭제하고자 하는 유저가 같은 지 확인
         sessionIdMatches(sessionUser, userId);

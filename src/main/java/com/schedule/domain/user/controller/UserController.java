@@ -53,9 +53,15 @@ public class UserController {
      * @return ResponseEntity<UpdateUserResponse> (id, email, username, createdAt, modifiedAt)
      */
     @PutMapping("/users/{userId}")
-    public ResponseEntity<CommonResponse<?>> update(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long userId, @RequestBody @Valid UpdateUserRequest request) {
+    public ResponseEntity<CommonResponse<?>> update(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long userId, @RequestBody @Valid UpdateUserRequest request, HttpSession session) {
 
-        CommonResponse<?> result = userService.update(sessionUser, userId, request);
+        CommonResponse<UpdateUserResponse> result = userService.update(sessionUser, userId, request);
+
+        UpdateUserResponse updateUserResponse = result.getContent();
+
+        SessionUser newSessionUser = new SessionUser(updateUserResponse.getId(), updateUserResponse.getEmail());
+
+        session.setAttribute("loginUser", newSessionUser);
 
         return ResponseEntity.status(result.getStatus()).body(result);
     }
@@ -67,9 +73,11 @@ public class UserController {
      * @return ResponseEntity<Void> NO_CONTENT
      */
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long userId, @RequestBody @Valid DeleteUserRequest request) {
+    public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long userId, @RequestBody @Valid DeleteUserRequest request, HttpSession session) {
 
         CommonResponse<?> result = userService.delete(sessionUser, userId, request);
+
+        session.invalidate();
 
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
