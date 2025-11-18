@@ -78,7 +78,7 @@ public class UserService {
     public CommonResponse<?> update(SessionUser sessionUser, Long userId, UpdateUserRequest request) {
 
         //1. 세션 아이디와 삭제하고자 하는 유저가 같은 지 확인
-        boolean idMatch = sessionIdMatches(sessionUser, userId);
+        sessionIdMatches(sessionUser, userId);
 
         //2. 유저 아이디 조회
         User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionCode.NOT_FOUND_USER));
@@ -106,7 +106,7 @@ public class UserService {
     public CommonResponse<?> delete(SessionUser sessionUser, Long userId, DeleteUserRequest request) {
 
         //1. 세션 아이디와 삭제하고자 하는 유저가 같은 지 확인, 일치하지 않으면 throw
-        boolean idMatch = sessionIdMatches(sessionUser, userId);
+        sessionIdMatches(sessionUser, userId);
 
         //2. 유저 비밀번호를 확인하기 위해 조회
         User savedUser = userRepository.findById(userId).orElseThrow(() -> new CustomException(ExceptionCode.NOT_FOUND_USER));

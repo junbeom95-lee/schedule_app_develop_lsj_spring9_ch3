@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: schedule
+  # config
+  config:
+    import: optional:file:.env[.properties]
+  # database
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL_TEST}
+    username: ${DB_USERNAME_TEST}
+    password: ${DB_PASSWORD_TEST}
+
+  # jpa
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # Test한 후 지움
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
