@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,7 +19,10 @@ import java.io.IOException;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class CustomFilter extends OncePerRequestFilter {
+
+    private final ObjectMapper objectMapper;
 
     /**
      * http 요청마다 호출되는 필터
@@ -63,8 +67,7 @@ public class CustomFilter extends OncePerRequestFilter {
             response.setStatus(result.getCode());
             response.setContentType("application/json; charset=UTF-8");
 
-            //7. ObjectMapper 생성 후 object -> json으로 직렬화
-            ObjectMapper objectMapper = new ObjectMapper();
+            //7. object -> json으로 직렬화
             String json = objectMapper.writeValueAsString(result);
 
             //8. 응답에 json 작성
