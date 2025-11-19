@@ -9,7 +9,7 @@ public class LoginRequest {
 
     @NotBlank(message = "이메일을 확인해주세요")
     @Email(message = "이메일형식으로 적어주세요")
-    private String email;
+    private String email;       //이메일
     @NotBlank(message = "비밀번호를 확인해주세요")
-    private String password;
+    private String password;    //비밀번호
 }

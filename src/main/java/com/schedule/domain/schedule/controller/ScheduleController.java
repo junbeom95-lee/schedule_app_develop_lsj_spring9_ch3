@@ -1,16 +1,11 @@
 package com.schedule.domain.schedule.controller;
 
 import com.schedule.common.model.CommonResponse;
-import com.schedule.domain.schedule.model.dto.CreateScheduleResponse;
-import com.schedule.domain.schedule.model.dto.GetSchedulePageResponse;
-import com.schedule.domain.schedule.model.dto.GetScheduleResponse;
-import com.schedule.domain.schedule.model.dto.UpdateScheduleResponse;
 import com.schedule.domain.schedule.model.request.CreateScheduleRequest;
 import com.schedule.domain.schedule.model.request.UpdateScheduleRequest;
 import com.schedule.domain.schedule.service.ScheduleService;
 import com.schedule.domain.user.model.dto.SessionUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.web.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

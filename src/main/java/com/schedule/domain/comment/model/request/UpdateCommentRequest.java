@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class UpdateCommentRequest {
-    private String content;
+    private String content; //수정할 댓글 내용
 }

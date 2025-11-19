@@ -5,7 +5,6 @@ import com.schedule.common.exception.CustomException;
 import com.schedule.common.model.CommonResponse;
 import com.schedule.domain.comment.model.dto.ScheduleCommentDTO;
 import com.schedule.domain.schedule.model.dto.CreateScheduleResponse;
-import com.schedule.domain.schedule.model.dto.GetSchedulePageResponse;
 import com.schedule.domain.schedule.model.dto.GetScheduleResponse;
 import com.schedule.domain.schedule.model.dto.UpdateScheduleResponse;
 import com.schedule.domain.schedule.model.request.CreateScheduleRequest;
@@ -102,7 +101,7 @@ public class ScheduleService {
         List<ScheduleCommentDTO> ScheduleIdCommentCount = commentRepository.countCommentByScheduleIdList();
 
         //5. Page<Entity>에서 Page<DTO>로 변환 및 반환
-        Page<GetSchedulePageResponse> responsePage = schedulePage.map(s -> {
+        Page<GetScheduleResponse> responsePage = schedulePage.map(s -> {
             //5-1. 댓글 개수 확인
             Long count = ScheduleIdCommentCount.stream()
                     .filter(dto -> Objects.equals(dto.getScheduleId(), s.getId()))
@@ -110,7 +109,7 @@ public class ScheduleService {
                     .findFirst().orElse(0L);
 
             //5-2. 응답 DTO로 반환
-            return new GetSchedulePageResponse(
+            return new GetScheduleResponse(
                     s.getId(),
                     s.getUser().getId(),
                     s.getTitle(),
@@ -127,7 +126,7 @@ public class ScheduleService {
     /**
      * 일정 조회 단건
      * @param scheduleId 일정 고유 ID
-     * @return GetOneScheduleResponse (id, userId, title, content, createdAt, modifiedAt)
+     * @return GetScheduleResponse (id, userId, title, content, createdAt, modifiedAt)
      */
     @Transactional(readOnly = true)
     public CommonResponse<?> getOne(Long scheduleId) {
@@ -135,17 +134,20 @@ public class ScheduleService {
         //1. 일정 찾기
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new CustomException(ExceptionCode.NOT_FOUND_SCHEDULE));
 
-        //2. 찾은 일정을 DTO로 담아 반환
+        //2. 댓글 개수 조회하기
+        Long commentCount = commentRepository.countBySchedule(schedule);
+
+        //3. 찾은 일정을 DTO로 담아 반환
         GetScheduleResponse response = new GetScheduleResponse(
                 schedule.getId(),
                 schedule.getUser().getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
+                commentCount,
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt());
         return new CommonResponse<>(HttpStatus.OK, response);
     }
-
 
     /**
      * 일정 수정

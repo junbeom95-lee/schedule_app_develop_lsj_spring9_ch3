@@ -63,7 +63,7 @@ public class CommentController {
     /**
      * 댓글 삭제
      * @param commentId 댓글 고유 ID
-     * @return NO_CONTENT
+     * @return OK, (NO_CONTENT)
      */
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long commentId) {

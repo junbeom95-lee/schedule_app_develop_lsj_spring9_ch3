@@ -149,7 +149,10 @@ public class UserService {
      */
     public boolean sessionIdMatches(SessionUser sessionUser, Long id) {
 
+        //세션에 저장된 아이디
         Long currentId = sessionUser.getId();
+
+        //아이디 비교 일치하면 true, 불일치면 예외 처리
         if(Objects.equals(currentId, id)) {
             return true;
         }

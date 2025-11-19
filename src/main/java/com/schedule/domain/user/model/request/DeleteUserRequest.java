@@ -7,5 +7,5 @@ import lombok.Getter;
 public class DeleteUserRequest {
 
     @NotBlank(message = "비밀번호를 확인해주세요")
-    private String password;
+    private String password;    //비밀번호
 }

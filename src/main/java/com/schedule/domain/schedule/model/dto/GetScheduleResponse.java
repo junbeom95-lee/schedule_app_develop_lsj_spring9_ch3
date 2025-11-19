@@ -10,14 +10,16 @@ public class GetScheduleResponse {
     private final Long userId;
     private final String title;
     private final String content;
+    private final Long commentCount;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public GetScheduleResponse(Long id, Long userId, String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public GetScheduleResponse(Long id, Long userId, String title, String content, Long commentCount, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.content = content;
+        this.commentCount = commentCount;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }

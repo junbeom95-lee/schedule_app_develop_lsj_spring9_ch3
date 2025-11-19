@@ -1,5 +1,6 @@
 package com.schedule.domain.comment.repository;
 
+import com.schedule.common.entity.Schedule;
 import com.schedule.domain.comment.model.dto.ScheduleCommentDTO;
 import com.schedule.common.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,4 +14,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("select c.schedule.id as scheduleId, coalesce(count(c), 0) as count from Comment c group by c.schedule.id")
     List<ScheduleCommentDTO> countCommentByScheduleIdList();
 
+    Long countBySchedule(Schedule schedule);
 }

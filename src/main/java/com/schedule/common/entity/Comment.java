@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 public class Comment extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;            //댓글 고유 ID
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user;          //유저
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "schedule_id", nullable = false)
-    private Schedule schedule;
+    private Schedule schedule;  //일정
 
     @Column(nullable = false)
-    private String content;
+    private String content;     //댓글 내용
 
     public Comment(User user, Schedule schedule, String content) {
         this.user = user;
