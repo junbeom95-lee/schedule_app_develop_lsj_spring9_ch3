@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -22,7 +23,7 @@ public class ScheduleController {
      * @param request CreateScheduleRequest (title, content)
      * @return CREATED, (id, userId, title, content, createdAt, modifiedAt)
      */
-    @PostMapping("/schedules")
+    @PostMapping()
     public ResponseEntity<CommonResponse<?>> create(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @RequestBody CreateScheduleRequest request) {
 
         CommonResponse<?> result = scheduleService.create(sessionUser, request);
@@ -37,7 +38,7 @@ public class ScheduleController {
      * @param pageSize 페이지 크기
      * @return OK, (id, userId, title, content, commentCount, createdAt, modifiedAt)
      */
-    @GetMapping("/schedules")
+    @GetMapping()
     public ResponseEntity<CommonResponse<?>> getAll(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) int pageNumber,
@@ -53,7 +54,7 @@ public class ScheduleController {
      * @param scheduleId 일정 고유 ID
      * @return OK, (id, userId, title, content, createdAt, modifiedAt)
      */
-    @GetMapping("/schedules/{scheduleId}")
+    @GetMapping("/{scheduleId}")
     public ResponseEntity<CommonResponse<?>> getOne(@PathVariable Long scheduleId) {
 
         CommonResponse<?> result = scheduleService.getOne(scheduleId);
@@ -67,7 +68,7 @@ public class ScheduleController {
      * @param request UpdateScheduleRequest (title, content)
      * @return OK, (id, userId, title, content, createdAt, modifiedAt)
      */
-    @PutMapping("/schedules/{scheduleId}")
+    @PutMapping("/{scheduleId}")
     public ResponseEntity<CommonResponse<?>> update(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long scheduleId, @RequestBody UpdateScheduleRequest request) {
 
         CommonResponse<?> result = scheduleService.update(sessionUser, scheduleId, request);
@@ -80,7 +81,7 @@ public class ScheduleController {
      * @param scheduleId 일정 고유 ID
      * @return NO_CONTENT, null
      */
-    @DeleteMapping("/schedules/{scheduleId}")
+    @DeleteMapping("/{scheduleId}")
     public ResponseEntity<CommonResponse<?>> delete(@SessionAttribute(name = "loginUser", required = false) SessionUser sessionUser, @PathVariable Long scheduleId) {
         CommonResponse<?> result = scheduleService.delete(sessionUser, scheduleId);
         return ResponseEntity.status(HttpStatus.OK).body(result);

@@ -79,6 +79,7 @@ public class ScheduleService {
 
         //1. 페이지 번호 default는 처음으로, 페이지 크기 default는 10으로 적용
         if(pageNumber < 1) pageNumber = 0;
+        else pageNumber -= 1;
         if(pageSize == 0) pageSize = 10;
 
         //2. 페이지 번호와 페이지 크기 및 수정일 기준으로 내림차순 정렬 설정
