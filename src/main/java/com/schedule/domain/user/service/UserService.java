@@ -144,17 +144,16 @@ public class UserService {
     /**
      * 세션 아이디와 조회하거나 경로로 얻은 id 일치하는지 조회
      * @param sessionUser 세션(id, email)
-     * @param id (비교할 유저 고유 Id)
-     * @return 일치하면 true, 불일치면 false
+     * @param id          (비교할 유저 고유 Id)
      */
-    public boolean sessionIdMatches(SessionUser sessionUser, Long id) {
+    public void sessionIdMatches(SessionUser sessionUser, Long id) {
 
         //세션에 저장된 아이디
         Long currentId = sessionUser.getId();
 
-        //아이디 비교 일치하면 true, 불일치면 예외 처리
+        //아이디 비교 -> 불일치면 예외 처리
         if(Objects.equals(currentId, id)) {
-            return true;
+            return;
         }
         throw new CustomException(ExceptionCode.UN_AUTHORIZED);
     }
