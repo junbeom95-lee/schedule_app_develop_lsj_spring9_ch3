@@ -16,6 +16,8 @@
 
 <img width="1217" height="457" alt="image" src="https://github.com/user-attachments/assets/fc97b3ee-1ad4-40f6-943d-754681d71edf" />
 
+### Notion -> https://www.notion.so/ERD-2aa555a1c11f808c8886d422591a6aa0?source=copy_link
+
 ---
 ## 주요 기능
 * 일정 생성, 일정 조회, 일정 수정, 일정 삭제 (CRUD)
